@@ -18,3 +18,15 @@ go build -o ${provider_bin}
 mkdir -p $provider_dir
 cp $provider_bin $provider_dir/$provider_bin
 rm $provider_bin
+
+cd test/
+
+rm -rf ./.terraform*
+
+export TF_LOG=DEBUG
+export VSCALE_URL="https://api.vscale.io/v1"
+
+terraform init
+#terraform apply
+terraform plan
+#terraform apply -auto-approve
