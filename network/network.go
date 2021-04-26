@@ -44,7 +44,7 @@ func (o *Network) setEnv() {
 
 func (o *Network) Do() (err error) {
 	if o.TimeoutSec == 0 {
-		o.TimeoutSec = 5
+		o.TimeoutSec = 15
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(o.TimeoutSec)*time.Second)
 	defer cancel()
