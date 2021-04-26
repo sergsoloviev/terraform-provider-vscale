@@ -20,7 +20,7 @@ func (o *SSHKey) NewObj() Resource {
 	return &SSHKey{}
 }
 
-func (o *SSHKey) ReadTF(res *schema.ResourceData) {
+func (o *SSHKey) ReadTF(res *schema.ResourceData) error {
 	idString := res.Get("id").(string)
 	if idString != "" {
 		id, err := strconv.Atoi(idString)
@@ -32,12 +32,14 @@ func (o *SSHKey) ReadTF(res *schema.ResourceData) {
 	}
 	o.Name = res.Get("name").(string)
 	o.Key = res.Get("key").(string)
+	return nil
 }
 
-func (o *SSHKey) WriteTF(res *schema.ResourceData) {
+func (o *SSHKey) WriteTF(res *schema.ResourceData) error {
 	res.SetId(strconv.Itoa(o.Id))
 	res.Set("name", o.Name)
 	res.Set("key", o.Key)
+	return nil
 }
 
 func (o *SSHKey) Create() error {
