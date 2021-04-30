@@ -2,7 +2,7 @@
 
 set -ex
 
-version=0.0.1
+version=0.0.2
 host_name=registry.terraform.io
 namespace=selectel
 name=vscale
@@ -23,7 +23,7 @@ cd test/
 
 rm -rf ./.terraform*
 
-export TF_LOG=DEBUG
+export TF_LOG=
 export VSCALE_URL="https://api.vscale.io/v1"
 
 terraform init

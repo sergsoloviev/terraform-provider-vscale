@@ -24,6 +24,16 @@ func main() {
 							State: schema.ImportStatePassthrough,
 						},
 					},
+					"vscale_server": {
+						CreateContext: CreateResource(&models.Server{}),
+						ReadContext:   ReadResource(&models.Server{}),
+						UpdateContext: UpdateResource(&models.Server{}),
+						DeleteContext: DeleteResource(&models.Server{}),
+						Schema:        models.SchemaServer,
+						Importer: &schema.ResourceImporter{
+							State: schema.ImportStatePassthrough,
+						},
+					},
 				},
 			}
 		},
@@ -79,9 +89,12 @@ func CreateResource(o models.Resource) schema.CreateContextFunc {
 	return func(ctx context.Context, res *schema.ResourceData, m interface{}) diag.Diagnostics {
 		diags := diag.Diagnostics{}
 		obj := o.NewObj()
-		obj.ReadTF(res)
+		err := obj.ReadTF(res)
+		if err != nil {
+			return diag.FromErr(err)
+		}
 
-		err := obj.Create()
+		err = obj.Create()
 		if err != nil {
 			return diag.FromErr(err)
 		}
