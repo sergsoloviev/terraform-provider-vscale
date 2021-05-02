@@ -2,9 +2,9 @@
 
 set -ex
 
-version=0.0.2
+version=0.0.3
 host_name=registry.terraform.io
-namespace=selectel
+namespace=sergsoloviev
 name=vscale
 target0=darwin_amd64
 

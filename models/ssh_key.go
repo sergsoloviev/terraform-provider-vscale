@@ -122,3 +122,7 @@ func (o *SSHKey) Delete() error {
 	}
 	return nil
 }
+
+func (o *SSHKey) Wait(res *schema.ResourceData) error {
+	return nil
+}

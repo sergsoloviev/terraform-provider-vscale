@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"time"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"gitlab.com/serg.dev/terraform-provider-vscale/network"
 )
@@ -210,6 +212,29 @@ func (o *Server) Delete() error {
 	// not 202||204?
 	if nw.Response.StatusCode != 200 {
 		return fmt.Errorf("%s", nw.Response.Header["Vscale-Error-Message"])
+	}
+	return nil
+}
+
+func (o *Server) Wait(res *schema.ResourceData) error {
+	stateChangeConf := &resource.StateChangeConf{
+		Pending:                   []string{"queued"},
+		Target:                    []string{"started"},
+		Timeout:                   res.Timeout(schema.TimeoutCreate),
+		Delay:                     10 * time.Second,
+		MinTimeout:                5 * time.Second,
+		ContinuousTargetOccurence: 3,
+		Refresh: func() (interface{}, string, error) {
+			err := o.Read()
+			if err != nil {
+				return 0, o.Status, err
+			}
+			return 1, o.Status, nil
+		},
+	}
+	_, err := stateChangeConf.WaitForState()
+	if err != nil {
+		return fmt.Errorf("Error waiting for example instance (%s) to be created: %s", res.Id(), err)
 	}
 	return nil
 }

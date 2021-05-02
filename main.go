@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
@@ -32,6 +34,9 @@ func main() {
 						Schema:        models.SchemaServer,
 						Importer: &schema.ResourceImporter{
 							State: schema.ImportStatePassthrough,
+						},
+						Timeouts: &schema.ResourceTimeout{
+							Create: schema.DefaultTimeout(5 * time.Minute),
 						},
 					},
 				},
@@ -99,7 +104,15 @@ func CreateResource(o models.Resource) schema.CreateContextFunc {
 			return diag.FromErr(err)
 		}
 
-		obj.WriteTF(res)
+		err = obj.Wait(res)
+		if err != nil {
+			return diag.FromErr(err)
+		}
+
+		err = obj.WriteTF(res)
+		if err != nil {
+			return diag.FromErr(err)
+		}
 		return diags
 	}
 

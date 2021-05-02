@@ -10,4 +10,5 @@ type Resource interface {
 	Read() error
 	Update() error
 	Delete() error
+	Wait(*schema.ResourceData) error
 }
